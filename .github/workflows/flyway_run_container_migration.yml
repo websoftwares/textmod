@@ -1,6 +1,10 @@
-name: Run the flyway container migrations by entering the image.
+name: Run the flyway container migrations
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/flyway_run_container_migration
 jobs:
   run-command:
     runs-on: ubuntu-latest
@@ -14,7 +18,7 @@ jobs:
             repair
             migrate
             info
-          image: ${{ github.event.inputs.image }}
+          image: ghcr.io/websoftwares/textmod/flyway/32d6b8f9112f9ba253bd6817471a6e8a732ecf12:latest
           env:
             FLYWAY_MIXED: "\"true\""
             FLYWAY_EDITION: community
