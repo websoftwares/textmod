@@ -20,7 +20,6 @@ jobs:
             info
           image: ghcr.io/websoftwares/textmod/flyway/32d6b8f9112f9ba253bd6817471a6e8a732ecf12:latest
           env:
-            FLYWAY_MIXED: "\"true\""
             FLYWAY_EDITION: community
             FLYWAY_URL: jdbc:mysql://textmod-mysql-server.mysql.database.azure.com:3306?useUnicode=true&characterEncoding=UTF-8&useSSL=true
             FLYWAY_SCHEMAS: textmod
