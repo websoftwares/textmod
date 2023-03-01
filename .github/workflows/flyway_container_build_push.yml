@@ -6,7 +6,7 @@ on:
     paths:
       - docker/flyway/Dockerfile
       - .github/workflows/flyway_container_build_push.yml
-      - migrations
+      - migrations/*.sql
 jobs:
   build:
     runs-on: ubuntu-latest
