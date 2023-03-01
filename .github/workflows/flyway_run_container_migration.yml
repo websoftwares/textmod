@@ -14,9 +14,9 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           run: |
-            info
-            repair
-            migrate
-            info
+            flyway info
+            flyway repair
+            flyway migrate
+            flyway info
           image: ghcr.io/websoftwares/textmod/flyway/32d6b8f9112f9ba253bd6817471a6e8a732ecf12:latest
           options: -e FLYWAY_MIXED=true -e FLYWAY_EDITION=community -e FLYWAY_URL=jdbc:mysql://textmod-mysql-server.mysql.database.azure.com:3306?useUnicode=true&characterEncoding=UTF-8&useSSL=true -e FLYWAY_SCHEMAS=textmod -e FLYWAY_USER=textmod_admin@textmod-mysql-server -e  FLYWAY_PASSWORD=${{ secrets.mysql_admin_password }}
