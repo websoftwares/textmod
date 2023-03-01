@@ -3,7 +3,7 @@ CREATE TABLE users (
   username VARCHAR(32) NOT NULL UNIQUE,
   password VARCHAR(64) NOT NULL,
   email VARCHAR(64) NOT NULL UNIQUE
-);
+)
 
 COLLATE='utf8_bin'
 ENGINE=InnoDB
