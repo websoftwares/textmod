@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Run Command in Docker Container
-        uses: docker/cli@v2
+        uses: docker/cli
         with:
           command: |
             info
