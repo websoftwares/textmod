@@ -1,0 +1,1 @@
+CREATE USER 'textmod_user'@'%' IDENTIFIED BY '2khynq2k653485877tqw457d16spsoo6';

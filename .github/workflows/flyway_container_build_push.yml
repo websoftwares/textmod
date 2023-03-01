@@ -1,0 +1,29 @@
+name: Flyway container build and push into ghcr
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - docker/flyway/Dockerfile
+      - .github/flyway_container_build_push.yml
+      - migrations
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v2
+        with:
+          push: true # Will only build if this is not here
+          file: ./docker/flyway/Dockerfile
+          context: .
+          tags: |
+            ghcr.io/${{ github.repository }}/flyway/${{ github.sha }}
