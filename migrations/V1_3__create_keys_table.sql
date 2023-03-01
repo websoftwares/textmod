@@ -5,7 +5,5 @@ CREATE TABLE api_keys (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 )
-
-COLLATE='utf8_bin'
 ENGINE=InnoDB
 ;

@@ -4,7 +4,5 @@ CREATE TABLE users (
   password VARCHAR(64) NOT NULL,
   email VARCHAR(64) NOT NULL UNIQUE
 )
-
-COLLATE='utf8_bin'
 ENGINE=InnoDB
 ;
