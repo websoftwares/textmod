@@ -21,3 +21,11 @@ variable "mysql_admin" {
 variable "mysql_admin_password" {
   default = ""
 }
+
+variable "github_ghcr_username" {
+  default = ""
+}
+
+variable "github_ghcr_pat_token" {
+  default = ""
+}

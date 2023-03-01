@@ -72,3 +72,39 @@ resource "azurerm_mysql_firewall_rule" "rg-textmod-tf" {
 output "mysql_server_fqdn" {
   value = azurerm_mysql_server.rg-textmod-tf.fqdn
 }
+
+#resource "azurerm_container_group" "rg-textmod-tf" {
+#  name                = "daily-app-bot"
+#  location            = azurerm_resource_group.rg-textmod-tf.location
+#  resource_group_name = azurerm_resource_group.rg-textmod-tf.name
+#  ip_address_type     = "Public"
+#  os_type             = "Linux"
+#  restart_policy      = "Always"
+#  dns_name_label      = "textmod-aci"
+#
+#
+#  image_registry_credential {
+#    server   = "ghcr.io"
+#    username = var.github_ghcr_username
+#    password = var.github_ghcr_pat_token
+#  }
+#
+#  container {
+#    name   = "textmod-flyway"
+#    image  = "ghcr.io/websoftwares/textmod/flyway/30890fe31118c581bcd5aeea76f782cfb3cbe579:latest"
+#    cpu    = "0.5"
+#    memory = "0.5"
+#
+#    environment_variables = {
+#      FLYWAY_MIXED="\"true\""
+#      FLYWAY_EDITION="community"
+#      FLYWAY_URL="jdbc:mysql://textmod-mysql-server.mysql.database.azure.com:3306?useUnicode=true&characterEncoding=UTF-8&useSSL=true"
+#      FLYWAY_SCHEMAS="textmod"
+#      FLYWAY_USER=var.mysql_admin
+#      FLYWAY_PASSWORD=var.mysql_admin_password
+#    }
+#    commands = [
+#      "info", "repair", "migrate", "info"
+#    ]
+#  }
+#}
