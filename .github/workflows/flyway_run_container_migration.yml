@@ -1,0 +1,24 @@
+name: Run the flyway container migrations by entering the image.
+on:
+  workflow_dispatch:
+jobs:
+  run-command:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Command in Docker Container
+        uses: docker/cli@v2
+        with:
+          command: |
+            info
+            repair
+            migrate
+            info
+          image: ${{ github.event.inputs.image }}
+          env:
+            FLYWAY_MIXED: "\"true\""
+            FLYWAY_EDITION: community
+            FLYWAY_URL: jdbc:mysql://textmod-mysql-server.mysql.database.azure.com:3306?useUnicode=true&characterEncoding=UTF-8&useSSL=true
+            FLYWAY_SCHEMAS: textmod
+            FLYWAY_USER: textmod_admin
+            FLYWAY_PASSWORD: ${{ secrets.mysql_admin_password }}
