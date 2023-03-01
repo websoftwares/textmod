@@ -5,7 +5,7 @@ on:
       - main
     paths:
       - docker/flyway/Dockerfile
-      - .github/flyway_container_build_push.yml
+      - .github/workflows/flyway_container_build_push.yml
       - migrations
 jobs:
   build:
