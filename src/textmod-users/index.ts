@@ -44,8 +44,8 @@ export async function insertUserAsync(user: User): Promise<User> {
   const insertParams = [username, hashedPassword, email];
 
   const insertQuery = `
-    INSERT INTO users (username, password, email)
-    VALUES (?, ?, ?)`;
+    INSERT INTO users (username, password, email, created_at, updated_at)
+    VALUES (?, ?, ?, NOW(), NOW());`;
 
   try {
     const connection = await connectionManager.getConnection();
