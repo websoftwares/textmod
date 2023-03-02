@@ -54,18 +54,16 @@ export async function insertUserAsync(user: User): Promise<User> {
       await connection.beginTransaction();
 
       const [result] = await connection.execute<OkPacket>(insertQuery, insertParams);
-      const userId = result.insertId
-
+      const userId = result.insertId;
       const storedUser = await getUserById(userId);
-
-      console.log(storedUser)
 
       await connection.commit();
 
       return {
-        ...storedUser[0],
-        ...user
-      }
+        ...storedUser,
+        ...user,
+        id: userId,
+      };
     } catch (error) {
       await connection.rollback();
       throw error;
@@ -76,6 +74,22 @@ export async function insertUserAsync(user: User): Promise<User> {
     console.error('Error inserting user:', error);
     throw error;
   }
+}
+
+async function getUserById(id: number): Promise<User> {
+  const selectQuery = 'SELECT id, username, password, email FROM users WHERE id = ?';
+  const selectParams = [id];
+
+  const connection = await connectionManager.getConnection();
+  const [rows] = await connection.execute<User[]>(selectQuery, selectParams);
+
+  connection.release();
+
+  if (rows.length === 0) {
+    throw new Error(`User with id ${id} not found`);
+  }
+
+  return rows[0];
 }
 
 export async function updateUserAsync(user: User): Promise<User> {
@@ -135,18 +149,6 @@ export async function updateUserAsync(user: User): Promise<User> {
     console.error('Error updating user:', error);
     throw error;
   }
-}
-
-async function getUserById(id: number): Promise<User[]> {
-  const selectQuery = 'SELECT * FROM users WHERE id = ?';
-  const selectParams = [id];
-
-  const connection = await connectionManager.getConnection();
-  const [rows] = await connection.execute<User[]>(selectQuery, selectParams);
-
-  connection.release();
-
-  return rows;
 }
 
 export function isStrongPassword(password: string): boolean {
