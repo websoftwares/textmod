@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import {User, insertUserAsync, updateUserAsync, isStrongPassword} from './textmod-users';
+import {User, insertUserAsync, updateUserAsync, isStrongPassword, deleteUserAsync, getUserById} from './textmod-users';
 
 const app = express();
 
@@ -16,7 +16,8 @@ app.post('/users', async (req: Request, res: Response) => {
     }
 
     const createdUser = await insertUserAsync(user);
-    res.status(201).json(createdUser);
+    let { password, ...maskedPasswordUser } = createdUser;
+    res.status(201).json(maskedPasswordUser);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error creating user' });
@@ -29,15 +30,40 @@ app.put('/users/:id', async (req: Request, res: Response) => {
     const user: User = {...req.body, ...req.params }
     // Update the user in the database
 
+    if(!user.username && !user.email && !user.password) {
+      throw new Error('No user fields to update')
+    }
+
     if (user.password && !isStrongPassword(user.password)) {
       throw new Error('Password is not strong enough');
     }
 
     const upsertedUser = await updateUserAsync(user);
-    res.json(upsertedUser);
+
+    let { password, ...maskedPasswordUser } = upsertedUser;
+    res.json(maskedPasswordUser);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Error updating or creating user' });
+    res.status(500).json({ error: 'Error updating user' });
+  }
+});
+
+app.delete('/users/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await getUserById(parseInt(id));
+
+    if (!user) {
+      return res.status(404).json({ message: `User with id ${id} not found` });
+    }
+
+    await deleteUserAsync(parseInt(id));
+
+    return res.status(200).json({ message: 'User deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    return res.status(500).json({ message: 'Error deleting user' });
   }
 });
 

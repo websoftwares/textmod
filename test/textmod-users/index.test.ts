@@ -1,5 +1,5 @@
 import test from 'tape'
-import { User, insertUserAsync, updateUserAsync } from '../../src/textmod-users';
+import { User, insertUserAsync, updateUserAsync, deleteUserAsync } from '../../src/textmod-users';
 import MySQLConnectionManager from '../../src/textmod-mysql';
 import bcrypt from 'bcrypt';
 import fs from 'fs';
@@ -33,9 +33,6 @@ test('insertUserAsync,  updateUserAsync should create and update a new user in t
 
   try {
     const result = await insertUserAsync(user);
-
-    console.log(result)
-
     // Verify that the result is not null and has the correct properties
     t.ok(result, 'Result should not be null');
     t.equal(result.username, user.username, 'Username should match');
@@ -43,12 +40,14 @@ test('insertUserAsync,  updateUserAsync should create and update a new user in t
     // Verify that the password is hashed correctly
     const isMatch = await bcrypt.compare(user.password, result.password);
     t.ok(isMatch, 'Password should be hashed correctly');
-    // user.id = result.id
-    // user.username = "jan"
-    // user.password = ''
-    //
-    // const result2 = await updateUserAsync(user)
-    // t.equal(result2.username, user.username, 'Username should match');
+    user.id = result.id
+    user.username = "jan"
+    user.password = ''
+
+    const result2 = await updateUserAsync(user)
+    t.equal(result2.username, user.username, 'Username should match');
+
+    await deleteUserAsync(user.id)
 
   } catch (err) {
     const error = err as Error;

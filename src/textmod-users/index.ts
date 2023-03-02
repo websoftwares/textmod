@@ -55,14 +55,13 @@ export async function insertUserAsync(user: User): Promise<User> {
 
       const [result] = await connection.execute<OkPacket>(insertQuery, insertParams);
       const userId = result.insertId;
-      const storedUser = await getUserById(userId);
 
       await connection.commit();
 
+      const storedUser = await getUserById(userId);
       return {
-        ...storedUser,
         ...user,
-        id: userId,
+        ...storedUser,
       };
     } catch (error) {
       await connection.rollback();
@@ -76,7 +75,7 @@ export async function insertUserAsync(user: User): Promise<User> {
   }
 }
 
-async function getUserById(id: number): Promise<User> {
+export async function getUserById(id: number): Promise<User> {
   const selectQuery = 'SELECT id, username, password, email FROM users WHERE id = ?';
   const selectParams = [id];
 
@@ -106,23 +105,34 @@ export async function updateUserAsync(user: User): Promise<User> {
     throw new Error('Hashed password is too long for database schema');
   }
 
-  username = username ?? null
-  email = email ?? null
+  interface Params {
+    username?: string;
+    email?: string;
+    password?: string;
+  }
 
-  const updateParams = [username, hashedPassword ?? null, email, id];
+  let params: Params = {};
+
+  if (username !== undefined) {
+    params.username = username;
+  }
+  if (email !== undefined) {
+    params.email = email;
+  }
+  if (password !== undefined) {
+    params.password = password;
+  }
+
+  const updateParams: (string | number)[] = Object.values(params);
+  updateParams.push(id);
 
   let updateQuery = `
-    UPDATE users
-    SET
-      ${username !== null ? `username = ?,` : ''}
-      ${password !== null ? `password = ?,` : ''}
-      ${email !== null ? `email = ?,` : ''}
-      updated_at = NOW()
-    WHERE id = ?`;
-
-  // remove the last comma from the query string
-  updateQuery = updateQuery.replace(/,\s*$/, '');
-
+  UPDATE users
+  SET
+    ${Object.keys(params).map(key => `${key} = ?`).join(', ')}
+    ,updated_at = NOW()
+  WHERE id = ?
+`;
   try {
     const connection = await connectionManager.getConnection();
 
@@ -131,13 +141,13 @@ export async function updateUserAsync(user: User): Promise<User> {
 
       await connection.execute<OkPacket>(updateQuery, updateParams);
 
-      const storedUser = await getUserById(id);
-
       await connection.commit();
 
+      const storedUser = await getUserById(id);
+
       return {
-        ...storedUser[0],
-        ...user
+        ...user,
+        ...storedUser
       }
     } catch (error) {
       await connection.rollback();
@@ -147,6 +157,31 @@ export async function updateUserAsync(user: User): Promise<User> {
     }
   } catch (error) {
     console.error('Error updating user:', error);
+    throw error;
+  }
+}
+
+export async function deleteUserAsync(id: number): Promise<void> {
+  const deleteQuery = 'DELETE FROM users WHERE id = ?';
+  const deleteParams = [id];
+
+  try {
+    const connection = await connectionManager.getConnection();
+
+    try {
+      await connection.beginTransaction();
+
+      await connection.execute<OkPacket>(deleteQuery, deleteParams);
+
+      await connection.commit();
+    } catch (error) {
+      await connection.rollback();
+      throw error;
+    } finally {
+      connection.release();
+    }
+  } catch (error) {
+    console.error('Error deleting user:', error);
     throw error;
   }
 }
