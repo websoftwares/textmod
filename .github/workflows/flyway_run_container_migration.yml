@@ -18,5 +18,5 @@ jobs:
             flyway repair
             flyway migrate
             flyway info
-          image: ghcr.io/websoftwares/textmod/flyway/4a5b802d3b9da926e4a65e3e31611fb296a0e55c:latest
+          image: ghcr.io/websoftwares/textmod/flyway/0e68705b4a6f0b491fb9459cddc49b04f94f7ea3:latest
           options: -e FLYWAY_MIXED=true -e FLYWAY_EDITION=community -e FLYWAY_URL=jdbc:mysql://textmod-mysql-server.mysql.database.azure.com:3306?useUnicode=true&characterEncoding=UTF-8&useSSL=true -e FLYWAY_SCHEMAS=textmod -e FLYWAY_USER=textmod_admin@textmod-mysql-server -e  FLYWAY_PASSWORD=${{ secrets.mysql_admin_password }}
