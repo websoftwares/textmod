@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "553d6823-d634-46c9-8c2a-50a8c32f15fa",
+    "_postman_id": "f8989e5a-0154-4c07-81cb-eb0f1d38f4b9",
     "name": "TextMod Users API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "1058979"
@@ -13,7 +13,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"username\": \"johndoe\",\n    \"password\": \"mypassword\",\n    \"email\": \"john.doe@example.com\"\n}",
+          "raw": "{\n    \"username\": \"johndoe\",\n    \"password\": \"Password123@\",\n    \"email\": \"john.doe@example.com\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -41,7 +41,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"id\": 123,\n    \"username\": \"janedoe\",\n    \"password\": \"mypassword\",\n    \"email\": \"jane.doe@example.com\"\n}",
+          "raw": "{\n    \"username\": \"janedoe\",\n    \"email\": \"jane.doe@example.com\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -49,7 +49,7 @@
           }
         },
         "url": {
-          "raw": "http://localhost:3000/users/123",
+          "raw": "http://localhost:3000/users/45",
           "protocol": "http",
           "host": [
             "localhost"
@@ -57,7 +57,7 @@
           "port": "3000",
           "path": [
             "users",
-            "123"
+            "45"
           ]
         }
       },
@@ -68,7 +68,6 @@
       "request": {
         "method": "DELETE",
         "header": [],
-        "body": {},
         "url": {
           "raw": "http://localhost:3000/users/123",
           "protocol": "http",

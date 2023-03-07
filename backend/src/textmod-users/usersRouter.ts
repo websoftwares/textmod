@@ -1,12 +1,12 @@
-import express, { Request, Response } from 'express';
-import {User, insertUserAsync, updateUserAsync, isStrongPassword, deleteUserAsync, getUserById} from './textmod-users';
+// usersRouter.ts
 
-const app = express();
+import { Router } from 'express';
+import { User, insertUserAsync, updateUserAsync, isStrongPassword, deleteUserAsync, getUserById } from './index';
 
-app.use(express.json());
+const usersRouter = Router();
 
 // Create a new user
-app.post('/users', async (req: Request, res: Response) => {
+usersRouter.post('/', async (req, res) => {
   try {
     const user: User = req.body;
 
@@ -25,12 +25,12 @@ app.post('/users', async (req: Request, res: Response) => {
 });
 
 // Update an existing user
-app.put('/users/:id', async (req: Request, res: Response) => {
+usersRouter.put('/:id', async (req, res) => {
   try {
-    const user: User = {...req.body, ...req.params }
+    const user: User = { ...req.body, ...req.params }
     // Update the user in the database
 
-    if(!user.username && !user.email && !user.password) {
+    if (!user.username && !user.email && !user.password) {
       throw new Error('No user fields to update')
     }
 
@@ -48,7 +48,7 @@ app.put('/users/:id', async (req: Request, res: Response) => {
   }
 });
 
-app.delete('/users/:id', async (req, res) => {
+usersRouter.delete('/:id', async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -67,6 +67,4 @@ app.delete('/users/:id', async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log('Server started on port 3000');
-});
+export default usersRouter;
