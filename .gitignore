@@ -105,7 +105,7 @@ dist
 
 .idea
 
-	#  Local .terraform directories
+#  Local .terraform directories
 terraform/.terraform/*
 
 # .tfstate files
