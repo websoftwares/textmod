@@ -23,6 +23,21 @@ module.exports = {
         options: {
           appendTsSuffixTo: [/\.vue$/]
         }
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          'vue-style-loader',
+          'css-loader',
+          'sass-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true,
+              additionalData: '@import "./src/assets/scss/_variables.scss";'
+              }
+          }
+        ]
       }
     ]
   },

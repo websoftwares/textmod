@@ -1,8 +1,15 @@
 <template>
-  <div>
+  <div class="my-component">
     <h1>{{ message }}</h1>
   </div>
 </template>
+
+<style lang="scss">
+.my-component {
+  background-color: $primary-color;
+}
+
+</style>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
