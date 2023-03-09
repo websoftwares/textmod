@@ -1,5 +1,5 @@
 const path = require('path');
-const { VueLoaderPlugin } = require('vue-loader-v16')
+const {VueLoaderPlugin} = require('vue-loader-v16')
 
 module.exports = {
   mode: 'development',
@@ -35,7 +35,7 @@ module.exports = {
             options: {
               sourceMap: true,
               additionalData: '@import "./src/assets/scss/_variables.scss";'
-              }
+            }
           }
         ]
       }

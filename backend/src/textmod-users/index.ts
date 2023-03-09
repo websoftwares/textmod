@@ -28,7 +28,7 @@ const config = {
 const connectionManager = new MySQLConnectionManager(config);
 
 export async function insertUserAsync(user: User): Promise<User> {
-  let  {username, password, email} = user;
+  let {username, password, email} = user;
 
   // Hash the password using bcrypt
   let hashedPassword = ''
@@ -92,7 +92,7 @@ export async function getUserById(id: number): Promise<User> {
 }
 
 export async function updateUserAsync(user: User): Promise<User> {
-  let  {id, username, password, email} = user;
+  let {id, username, password, email} = user;
 
   // Hash the password using bcrypt
   let hashedPassword = ''
@@ -127,12 +127,11 @@ export async function updateUserAsync(user: User): Promise<User> {
   updateParams.push(id);
 
   let updateQuery = `
-  UPDATE users
-  SET
-    ${Object.keys(params).map(key => `${key} = ?`).join(', ')}
-    ,updated_at = NOW()
-  WHERE id = ?
-`;
+    UPDATE users
+    SET ${Object.keys(params).map(key => `${key} = ?`).join(', ')}
+      , updated_at = NOW()
+    WHERE id = ?
+  `;
   try {
     const connection = await connectionManager.getConnection();
 
