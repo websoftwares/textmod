@@ -106,4 +106,12 @@ usersRouter.get('/protected', verifyAccessToken, (req: CustomRequest, res: Respo
   res.json({ message: 'Logged in', userId: req.userId });
 });
 
+usersRouter.post('/logout', async (req: Request, res: Response) => {
+  // Set the value of the access_token cookie to an empty string
+  res.cookie('access_token', '', { expires: new Date(0) });
+
+  // Send a success response
+  res.status(200).json({ message: 'Logout successful' });
+});
+
 export default usersRouter;

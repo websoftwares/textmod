@@ -11,7 +11,12 @@ app.use(cookieParser());
 app.use(express.json());
 
 // Enable CORS for all origins
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:8080',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 
 // Use the users router for all requests to /api/users
 app.use('/api/users', usersRouter);
