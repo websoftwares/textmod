@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "b1ccc027-b3ae-49e1-9c04-900317b9ec23",
-		"name": "TextMod Users API",
+		"_postman_id": "b65ffb10-8e8a-4cb2-af88-1e4bfbb6e2ea",
+		"name": "TextMod API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -192,7 +192,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/api/keys/abc123",
+					"raw": "http://localhost:3000/api/keys/45c7b2f92eea70e4955f04cbf6d09335c88ab846ff67965903b4d28d6052be5a",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -201,7 +201,7 @@
 					"path": [
 						"api",
 						"keys",
-						"abc123"
+						"45c7b2f92eea70e4955f04cbf6d09335c88ab846ff67965903b4d28d6052be5a"
 					]
 				}
 			},
