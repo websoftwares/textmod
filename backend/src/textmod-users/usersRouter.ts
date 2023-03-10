@@ -1,7 +1,10 @@
 // usersRouter.ts
 
-import {Router} from 'express';
-import {User, insertUserAsync, updateUserAsync, isStrongPassword, deleteUserAsync, getUserById} from './index';
+import bcrypt from 'bcrypt';
+import {Router, Request, Response} from 'express';
+import {User, insertUserAsync, updateUserAsync, isStrongPassword, deleteUserAsync, getUserById, getUserByEmail} from './index';
+import { generateAccessToken, verifyAccessToken, CustomRequest } from './token';
+
 
 const usersRouter = Router();
 
@@ -65,6 +68,42 @@ usersRouter.delete('/:id', async (req, res) => {
     console.error('Error deleting user:', error);
     return res.status(500).json({message: 'Error deleting user'});
   }
+});
+
+usersRouter.post('/login', async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+
+  // Find user by email
+  const user = await getUserByEmail(email);
+
+  if (!user) {
+    return res.status(401).json({ message: 'Invalid email or password' });
+  }
+  
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  
+  if (!isPasswordValid) {
+    return res.status(401).json({ message: 'Invalid email or password' });
+  }
+
+  // Generate access token for user
+  const accessToken = generateAccessToken(user.id);
+
+  // Set access token as cookie with HttpOnly and Secure flags
+  res.cookie('access_token', accessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict'
+  });
+
+  // Return success response
+  res.json({ message: 'Login successful' });
+});
+
+// Protected endpoint
+usersRouter.get('/protected', verifyAccessToken, (req: CustomRequest, res: Response) => {
+  // Access token is valid, return protected data
+  res.json({ message: 'Protected data', userId: req.userId });
 });
 
 export default usersRouter;

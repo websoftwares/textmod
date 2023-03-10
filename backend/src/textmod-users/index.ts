@@ -185,6 +185,22 @@ export async function deleteUserAsync(id: number): Promise<void> {
   }
 }
 
+export async function getUserByEmail(email: string): Promise<User | null> {
+  const selectQuery = 'SELECT id, username, password, email FROM users WHERE email = ?';
+  const selectParams = [email];
+
+  const connection = await connectionManager.getConnection();
+  const [rows] = await connection.execute<User[]>(selectQuery, selectParams);
+
+  connection.release();
+
+  if (rows.length === 0) {
+    return null;
+  }
+
+  return rows[0];
+}
+
 export function isStrongPassword(password: string): boolean {
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   return passwordRegex.test(password);

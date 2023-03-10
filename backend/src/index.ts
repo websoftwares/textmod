@@ -3,8 +3,10 @@
 import express from 'express';
 import usersRouter from './textmod-users/usersRouter';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 const app = express();
+app.use(cookieParser());
 app.use(express.json());
 
 // Enable CORS for all origins
