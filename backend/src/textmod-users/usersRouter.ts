@@ -103,7 +103,7 @@ usersRouter.post('/login', async (req: Request, res: Response) => {
 // Protected endpoint
 usersRouter.get('/protected', verifyAccessToken, (req: CustomRequest, res: Response) => {
   // Access token is valid, return protected data
-  res.json({ message: 'Protected data', userId: req.userId });
+  res.json({ message: 'Logged in', userId: req.userId });
 });
 
 export default usersRouter;
