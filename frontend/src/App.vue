@@ -1,28 +1,7 @@
 <template>
-  <div class="my-component">
-    <h1>{{ message }}</h1>
+  <div>
+    <router-link to="/">Home</router-link>
+    <router-link to="/signup">Sign up</router-link>
+    <router-view></router-view>
   </div>
 </template>
-
-<style lang="scss">
-.my-component {
-  background-color: $primary-color;
-}
-
-</style>
-
-<script lang="ts">
-import {defineComponent} from 'vue';
-
-interface ComponentData {
-  message: string;
-}
-
-export default defineComponent({
-  data(): ComponentData {
-    return {
-      message: 'Hello, Vue.js!'
-    };
-  }
-});
-</script>

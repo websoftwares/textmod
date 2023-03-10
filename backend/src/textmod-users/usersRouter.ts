@@ -16,7 +16,7 @@ usersRouter.post('/', async (req, res) => {
     }
 
     const createdUser = await insertUserAsync(user);
-    let {password, ...maskedPasswordUser} = createdUser;
+    let {password, id, ...maskedPasswordUser} = createdUser;
     res.status(201).json(maskedPasswordUser);
   } catch (error) {
     console.error(error);
