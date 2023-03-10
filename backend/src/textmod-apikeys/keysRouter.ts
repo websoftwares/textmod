@@ -12,12 +12,9 @@ keysRouter.post('/', verifyAccessToken, async (req: CustomRequest, res: Response
     const apiKey = {
         userId: req.userId,
         key: generateApiKey(),
-        permissions: { read: true, write: true },
+        permissions: { read: true, write: false },
         expirationDate: date1yFromNow.toISOString().slice(0, 10)
     } as ApiKey;
-
-    console.log(apiKey)
-
 
     try {
         const createdApiKey = await createApiKey(apiKey);
@@ -35,8 +32,10 @@ keysRouter.get('/:key', verifyAccessToken, async (req: CustomRequest, res: Respo
         const foundApiKey = await getApiKeyByKey(key);
         if (foundApiKey) {
             // Check if the requesting user is authorized to access the API key
-            if (foundApiKey.userId === req.userId) {
-                res.json(foundApiKey);
+            if (foundApiKey.user_id == req.userId) {
+                let { id, user_id, expiration_date, ...maskedPasswordApiKey } = foundApiKey;
+                maskedPasswordApiKey.userId = req.userId as number
+                res.json(maskedPasswordApiKey);
             } else {
                 res.status(401).send('Unauthorized');
             }
@@ -56,7 +55,7 @@ keysRouter.delete('/:key', verifyAccessToken, async (req: CustomRequest, res: Re
         const foundApiKey = await getApiKeyByKey(key);
         if (foundApiKey) {
             // Check if the requesting user is authorized to delete the API key
-            if (foundApiKey.userId === req.userId) {
+            if (foundApiKey.user_id == req.userId) {
                 await deleteApiKeyByKey(key);
                 res.send(`Deleted API key with key ${key}`);
             } else {

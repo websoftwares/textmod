@@ -54,12 +54,13 @@ async function createApiKey(apiKey: ApiKey): Promise<ApiKey> {
 async function getApiKeyByKey(key: string): Promise<ApiKey | null> {
     const conn = await connectionManager.getConnection();
     try {
-        const sql = `SELECT * FROM api_keys WHERE key = ?`;
+        const sql = `SELECT * FROM api_keys WHERE \`key\` = ?`;
         const [rows] = await conn.execute<ApiKey[]>(sql, [key]);
         const apiKey = rows[0];
         if (apiKey) {
             apiKey.permissions = JSON.parse(apiKey.permissions as string);
             apiKey.expirationDate = new Date(apiKey.expiration_date);
+
             return apiKey;
         } else {
             return null;
@@ -72,8 +73,8 @@ async function getApiKeyByKey(key: string): Promise<ApiKey | null> {
 async function deleteApiKeyByKey(key: string): Promise<void> {
     const conn = await connectionManager.getConnection();
     try {
-        const sql = `DELETE FROM api_keys WHERE key = :key`;
-        const values = { key };
+        const sql = `DELETE FROM api_keys WHERE \`key\` = ?`;
+        const values = [key];
         await conn.execute(sql, values);
     } finally {
         conn.release();
