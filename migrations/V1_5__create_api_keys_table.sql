@@ -1,8 +1,8 @@
 DROP TABLE IF EXISTS api_keys;
 
 CREATE TABLE api_keys (
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  user_id INT UNSIGNED NOT NULL,
+  id INT NOT NULL AUTO_INCREMENT,
+  user_id INT NOT NULL,
   `key` VARCHAR(64) NOT NULL,
   permissions LONGTEXT NOT NULL,
   expiration_date DATE NOT NULL,
