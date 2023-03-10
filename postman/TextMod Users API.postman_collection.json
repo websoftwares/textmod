@@ -135,6 +135,77 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Create New API Key",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/keys",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"keys"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get API Key by Key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/keys/abc123",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"keys",
+						"abc123"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete API Key by Key",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/keys/abc123",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"keys",
+						"abc123"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
