@@ -1,20 +1,71 @@
 <template>
-  <form>
-    <label>
-      Username:
-      <input type="text" v-model="user.username">
-    </label>
-    <label>
-      Email:
-      <input type="email" v-model="user.email">
-    </label>
-    <label>
-      Password:
-      <input type="password" v-model="user.password">
-    </label>
-    <button @click.prevent="signup">Sign up</button>
-  </form>
+  <div class="signup-wrapper">
+    <form class="signup-form">
+      <div class="form-group">
+        <label>Username:</label>
+        <input type="text" v-model="user.username">
+      </div>
+      <div class="form-group">
+        <label>Email:</label>
+        <input type="email" v-model="user.email">
+      </div>
+      <div class="form-group">
+        <label>Password:</label>
+        <input type="password" v-model="user.password">
+      </div>
+      <div class="form-group">
+        <button @click.prevent="signup">Sign up</button>
+      </div>
+    </form>
+  </div>
 </template>
+
+<style scopd lang="scss">
+.signup-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.signup-form {
+  max-width: 600px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+
+  label {
+    margin-bottom: 0.5rem;
+  }
+
+  input {
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+  }
+}
+
+button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  background-color: #008000;
+  color: #fff;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #006400;
+  }
+}
+</style>
+
   
 <script lang="ts">
 import { defineComponent } from 'vue';
