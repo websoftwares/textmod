@@ -1,6 +1,7 @@
 import { createProxyMiddleware, Filter, fixRequestBody, Options, responseInterceptor } from 'http-proxy-middleware';
 import { Router, Request, Response, RequestHandler } from 'express';
 import { IncomingMessage } from 'http';
+import { apiKeyValidationMiddleware } from '../textmod-apikeys';
 
 const pathFilter: Filter<IncomingMessage> = (pathname, req) => {
     return Boolean(pathname.match(/^\/check/) && req.method === 'POST');
@@ -157,7 +158,7 @@ const promptRouter = Router();
 
 const middlewareProxy = createProxyMiddleware(options)
 
-promptRouter.post('/check', preFlightRequestHandler, middlewareProxy);
+promptRouter.post('/check', apiKeyValidationMiddleware, preFlightRequestHandler, middlewareProxy);
 
 
 export default promptRouter;

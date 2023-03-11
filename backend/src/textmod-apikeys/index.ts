@@ -2,6 +2,7 @@ import MySQLConnectionManager from '../textmod-mysql';
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
 import fs from 'fs';
 import crypto from 'crypto';
+import { Request, Response, NextFunction } from 'express';
 
 export interface ApiKey extends RowDataPacket {
     id?: number;
@@ -106,4 +107,34 @@ function generateApiKey(): string {
     return apiKey;
   }
 
-export { createApiKey, getApiKeyByKey, deleteApiKeyByKey, generateApiKey, getApiKeyByUserId};
+  
+  interface CustomRequest extends Request {
+    apiKey?: string;
+  }
+
+  async function apiKeyValidationMiddleware(req: CustomRequest, res: Response, next: NextFunction) {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).send('Unauthorized');
+    }
+    
+    const token = authHeader.substring(7); // remove "Bearer " prefix
+    
+    const apiKey = await getApiKeyByKey(token);
+    if (!apiKey) {
+      return res.status(401).send('Invalid API key');
+    }
+
+    const expirationDate = apiKey.expirationDate as Date
+
+    if (expirationDate.getTime() < Date.now()) {
+        return res.status(401).send('API key has expired');
+      }
+    
+    // attach the apiKey object to the request for use in subsequent middleware/handlers
+    req.apiKey = apiKey.key;
+    
+    next();
+  }
+
+export { createApiKey, getApiKeyByKey, deleteApiKeyByKey, generateApiKey, getApiKeyByUserId, apiKeyValidationMiddleware, CustomRequest};
