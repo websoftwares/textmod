@@ -114,3 +114,5 @@ terraform/.terraform/*
 
 dist
 .idea
+
+backend/src/textmod-prompt/README.md
