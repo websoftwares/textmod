@@ -70,6 +70,25 @@ async function getApiKeyByKey(key: string): Promise<ApiKey | null> {
     }
 }
 
+async function getApiKeyByUserId(userId: number): Promise<ApiKey | null> {
+    const conn = await connectionManager.getConnection();
+    try {
+        const sql = `SELECT * FROM api_keys WHERE user_id = ?`;
+        const [rows] = await conn.execute<ApiKey[]>(sql, [userId]);
+        const apiKey = rows[0];
+        if (apiKey) {
+            apiKey.permissions = JSON.parse(apiKey.permissions as string);
+            apiKey.expirationDate = new Date(apiKey.expiration_date);
+
+            return apiKey;
+        } else {
+            return null;
+        }
+    } finally {
+        conn.release();
+    }
+}
+
 async function deleteApiKeyByKey(key: string): Promise<void> {
     const conn = await connectionManager.getConnection();
     try {
@@ -87,4 +106,4 @@ function generateApiKey(): string {
     return apiKey;
   }
 
-export { createApiKey, getApiKeyByKey, deleteApiKeyByKey, generateApiKey};
+export { createApiKey, getApiKeyByKey, deleteApiKeyByKey, generateApiKey, getApiKeyByUserId};

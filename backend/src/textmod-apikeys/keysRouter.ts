@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { createApiKey, getApiKeyByKey, deleteApiKeyByKey, ApiKey, generateApiKey } from './index';
+import { createApiKey, getApiKeyByKey, deleteApiKeyByKey, ApiKey, generateApiKey, getApiKeyByUserId } from './index';
 import { verifyAccessToken, CustomRequest } from '../textmod-users/token';
 
 const keysRouter = Router();
@@ -34,7 +34,27 @@ keysRouter.get('/:key', verifyAccessToken, async (req: CustomRequest, res: Respo
             // Check if the requesting user is authorized to access the API key
             if (foundApiKey.user_id == req.userId) {
                 let { id, user_id, expiration_date, ...maskedPasswordApiKey } = foundApiKey;
-                maskedPasswordApiKey.userId = req.userId as number
+                res.json(maskedPasswordApiKey);
+            } else {
+                res.status(401).send('Unauthorized');
+            }
+        } else {
+            res.status(404).send('API key not found');
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error getting API key');
+    }
+});
+
+keysRouter.get('/', verifyAccessToken, async (req: CustomRequest, res: Response) => {
+    const userId = req.userId as number
+    try {
+        const foundApiKey = await getApiKeyByUserId(userId);
+        if (foundApiKey) {
+            // Check if the requesting user is authorized to access the API key
+            if (foundApiKey.user_id == req.userId) {
+                let { id, user_id, expiration_date, ...maskedPasswordApiKey } = foundApiKey;
                 res.json(maskedPasswordApiKey);
             } else {
                 res.status(401).send('Unauthorized');
