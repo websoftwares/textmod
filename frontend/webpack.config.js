@@ -51,7 +51,12 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        VUE_APP_BASE_URI: JSON.stringify(process.env.VUE_APP_BASE_URI)
+        VUE_APP_BASE_URI: JSON.stringify(process.env.VUE_APP_BASE_URI),
+        VUE_STRIPE_PRICE_ID_STANDARD_MONTH: JSON.stringify(process.env.VUE_STRIPE_PRICE_ID_STANDARD_MONTH),
+        VUE_STRIPE_PRICE_ID_STANDARD_YEAR: JSON.stringify(process.env.VUE_STRIPE_PRICE_ID_STANDARD_YEAR),
+        VUE_STRIPE_PRICE_ID_ENTERPRISE_MONTH: JSON.stringify(process.env.VUE_STRIPE_PRICE_ID_ENTERPRISE_MONTH),
+        VUE_STRIPE_PRICE_ID_ENTERPRISE_YEAR: JSON.stringify(process.env.VUE_STRIPE_PRICE_ID_ENTERPRISE_YEAR),
+        VUE_STRIPE_PUB_KEY: JSON.stringify(process.env.VUE_STRIPE_PUB_KEY),
       }
     }),
     new VueLoaderPlugin(),

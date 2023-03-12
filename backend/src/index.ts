@@ -6,6 +6,8 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import keysRouter from './textmod-apikeys/keysRouter';
 import promptRouter from './textmod-prompt/promptRouter';
+import subscriptionsRouter from './textmod-subscriptions/subscriptionsRouter';
+import subscriptionsWebhookRouter from './textmod-subscriptions/subscriptionsWebhookRouter';
 
 const app = express();
 app.use(cookieParser());
@@ -38,6 +40,10 @@ app.use('/api/users', usersRouter);
 app.use('/api/keys', keysRouter);
 
 app.use('/api/text', promptRouter);
+
+app.use('/api/subscriptions', subscriptionsRouter);
+
+app.use('/webhook/subscriptions', subscriptionsWebhookRouter);
 
 app.listen(3000, () => {
   console.log('Server started on port 3000');

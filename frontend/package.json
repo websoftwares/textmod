@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@stripe/stripe-js": "^1.48.0",
     "dotenv": "^16.0.3",
     "vue": "^3.2.36",
     "vue-router": "^4.0.13"

@@ -116,3 +116,4 @@ dist
 .idea
 
 backend/src/textmod-prompt/README.md
+backend/src/textmod-subscriptions/README.md
