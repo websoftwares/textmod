@@ -30,6 +30,64 @@ resource "azurerm_resource_group" "rg-textmod-tf" {
   location = "northcentralus"
 }
 
+resource "azurerm_redis_cache" "rg-textmod-tf" {
+  name                = "textmod-redis-cache"
+  location            = azurerm_resource_group.rg-textmod-tf.location
+  resource_group_name = azurerm_resource_group.rg-textmod-tf.name
+  sku_name            = "Basic"
+  capacity            = 0
+  family              = "C"
+}
+
+resource "azurerm_communication_service" "rg-textmod-tf" {
+  name                = "textmod-communicationservice"
+  resource_group_name = azurerm_resource_group.rg-textmod-tf.name
+  data_location       = "United States"
+}
+
+resource "azurerm_redis_firewall_rule" "rg-textmod-tf" {
+  name                = "allow_all"
+  resource_group_name = azurerm_resource_group.rg-textmod-tf.name
+  redis_cache_name    = azurerm_redis_cache.rg-textmod-tf.name
+  start_ip   = "0.0.0.0"
+  end_ip      = "255.255.255.255"
+}
+
+resource "azurerm_servicebus_namespace" "rg-textmod-tf" {
+  name                = "textmod-servicebus-ns"
+  location            = azurerm_resource_group.rg-textmod-tf.location
+  resource_group_name = azurerm_resource_group.rg-textmod-tf.name
+  sku                 = "Basic"
+  capacity            = 0
+}
+
+resource "azurerm_servicebus_namespace_authorization_rule" "rg-textmod-tf" {
+  name                = "textmod-servicebus-auth-rule"
+  namespace_id      = azurerm_servicebus_namespace.rg-textmod-tf.id
+  listen              = true
+  send                = true
+}
+
+resource "azurerm_network_security_group" "rg-textmod-tf" {
+  name                = "textmod-nsg"
+  location            = azurerm_resource_group.rg-textmod-tf.location
+  resource_group_name = azurerm_resource_group.rg-textmod-tf.name
+}
+
+resource "azurerm_network_security_rule" "rg-textmod-tf" {
+  name                        = "allow-amqp"
+  priority                    = 100
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "5671"
+  source_address_prefix       = "0.0.0.0/0"
+  destination_address_prefix  = "10.0.0.0/24"
+  resource_group_name         = azurerm_resource_group.rg-textmod-tf.name
+  network_security_group_name = azurerm_network_security_group.rg-textmod-tf.name
+}
+
 resource "azurerm_storage_account" "rg-textmod-tf" {
   name                      = "textmodstorageacc"
   resource_group_name       = azurerm_resource_group.rg-textmod-tf.name

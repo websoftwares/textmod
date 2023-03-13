@@ -1,6 +1,10 @@
 import { Router, Request, Response, NextFunction } from 'express';
+import { Stripe } from 'stripe';
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
+interface SubscriptionResponse extends Stripe.Subscription {}
+interface CustomerResponse extends Stripe.Customer {}
 
 const subscriptionsRouter = Router();
 
@@ -20,7 +24,7 @@ subscriptionsRouter.post('/', async (req: Request, res: Response, next: NextFunc
 
     try {
         // Create a new customer in Stripe
-        const customer = await stripe.customers.create({
+        const customer : CustomerResponse = await stripe.customers.create({
             email,
             name: username,
             payment_method: paymentMethodId,
@@ -30,13 +34,11 @@ subscriptionsRouter.post('/', async (req: Request, res: Response, next: NextFunc
         });
 
         // Create a new subscription for the customer
-        const subscription = await stripe.subscriptions.create({
+        const subscription : SubscriptionResponse = await stripe.subscriptions.create({
             customer: customer.id,
             items: [{ price: priceId }],
             expand: ['latest_invoice.payment_intent'],
         });
-
-        console.log(subscription)
 
         res.send({ success: true });
     } catch (err) {
