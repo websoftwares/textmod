@@ -4,7 +4,7 @@ import { EmailAddress, EmailClient, EmailMessage, EmailRecipients, PlainTextEmai
 import { EmailSendConnectionManager } from '../../src/textmod-email/index';
 
 // Create an instance of the email send connection manager
-const emailManager = new EmailSendConnectionManager('endpoint=https://textmod-communicationservice.communication.azure.com/;accesskey=MiFU3rnnqjEX9f7wTV7R8bdfnBi1+tQBpa3D51vv/Ns+I1yohXo9fIJx+CZQSBwMP6yx6Q/GkNO1lHVyY5wweg==');
+const emailManager = new EmailSendConnectionManager(process.env.AZ_COM_EMAIL_SERVICE_CONNECTION_STRING as string);
 
 // Define the email message
 const email: EmailMessage = {

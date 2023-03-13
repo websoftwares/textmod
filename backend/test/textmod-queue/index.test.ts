@@ -3,7 +3,7 @@ import { ServiceBusConnectionManager } from "../../src/textmod-queue/index";
 
 
 (async () => {
-  const connectionString = 'Endpoint=sb://textmod-servicebus-ns.servicebus.windows.net/;SharedAccessKeyName=test;SharedAccessKey=thjUaEQQaBTJIWOO3EfKLPQha+I/VcYHJ+ASbD6nm+k=;EntityPath=test';
+  const connectionString = ''
   const queueName = 'test'
   
   const queueManager = new ServiceBusConnectionManager(connectionString);
