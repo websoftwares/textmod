@@ -12,9 +12,9 @@ const processMessage = async () => {
 
         
         const subscription = JSON.parse(message.body) as Subscription
-        const 
+        const subscriptionQueryParams = subscription as SubscriptionQueryParams
 
-        console.log(subscription)
+        console.log(subscriptionQueryParams)
 
 
         await receiver.abandonMessage(message);
