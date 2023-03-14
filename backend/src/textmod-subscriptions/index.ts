@@ -3,7 +3,7 @@ import { ResultSetHeader, RowDataPacket } from 'mysql2';
 import fs from 'fs';
 
 export default interface Subscription {
-  id: number;
+  id : number;
   userId: number;
   stripeCustomerId: string;
   startDate: Date;
@@ -33,7 +33,7 @@ const connectionManager = new MySQLConnectionManager(config);
 
 
 
-interface CreateSubscriptionParams {
+export interface CreateSubscriptionParams {
   userId: number;
   stripeCustomerId: string;
   startDate: Date;
@@ -42,7 +42,7 @@ interface CreateSubscriptionParams {
   stripeSubscriptionId: string;
 }
 
-interface CreateSubscriptionResult {
+export interface CreateSubscriptionResult {
   id: number;
   userId: number;
   stripeCustomerId: string;
@@ -84,7 +84,7 @@ export interface UpdateSubscriptionParams {
   stripeSubscriptionId?: string;
 }
 
-interface UpdateSubscriptionResult {
+export interface UpdateSubscriptionResult {
   affectedRows: number;
 }
 
@@ -132,4 +132,50 @@ export async function updateSubscription(params: UpdateSubscriptionParams): Prom
 } finally {
   connection.release();
 }
+}
+
+export interface SubscriptionQueryParams {
+  stripeCustomerId?: string;
+  userId?: number;
+  stripeSubscriptionId?: string;
+}
+
+export async function getSubscription(params: SubscriptionQueryParams): Promise<Subscription[]> {
+  const { stripeCustomerId, userId, stripeSubscriptionId } = params;
+  const connection = await connectionManager.getConnection();
+  try {
+    let whereClause = '';
+    const values: (string | number)[] = [];
+    if (stripeCustomerId !== undefined) {
+      whereClause += 'stripe_customer_id = ? AND ';
+      values.push(stripeCustomerId);
+    }
+    if (userId !== undefined) {
+      whereClause += 'user_id = ? AND ';
+      values.push(userId);
+    }
+    if (stripeSubscriptionId !== undefined) {
+      whereClause += 'stripe_subscription_id = ? AND ';
+      values.push(stripeSubscriptionId);
+    }
+    if (whereClause === '') {
+      throw new Error('At least one query parameter must be provided');
+    }
+    whereClause = whereClause.slice(0, -5); // remove trailing "AND "
+    const sql = `SELECT * FROM subscriptions WHERE ${whereClause}`;
+    const [rows] = await connection.query(sql, values) as unknown as [RowDataPacket[]];
+    return rows.map((row) => ({
+      id: row.id,
+      userId: row.user_id,
+      stripeCustomerId: row.stripe_customer_id,
+      startDate: row.start_date,
+      endDate: row.end_date,
+      status: row.status,
+      stripeSubscriptionId: row.stripe_subscription_id,
+    }));
+  } catch (err) {
+    throw err;
+  } finally {
+    connection.release();
+  }
 }

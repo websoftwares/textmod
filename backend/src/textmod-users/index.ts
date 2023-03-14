@@ -2,6 +2,7 @@ import MySQLConnectionManager from '../textmod-mysql';
 import {OkPacket, RowDataPacket} from 'mysql2';
 import bcrypt from 'bcrypt';
 import fs from 'fs';
+import crypto from 'crypto';
 
 export interface User extends RowDataPacket {
   id: number;
@@ -204,4 +205,14 @@ export async function getUserByEmail(email: string): Promise<User | null> {
 export function isStrongPassword(password: string): boolean {
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   return passwordRegex.test(password);
+}
+
+export function generateSecurePassword(length: number): string {
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+[]{}|;:,.<>?';
+  const randomBytes = crypto.randomBytes(length);
+  let password = '';
+  for (let i = 0; i < length; i++) {
+    password += chars.charAt(randomBytes[i] % chars.length);
+  }
+  return password;
 }

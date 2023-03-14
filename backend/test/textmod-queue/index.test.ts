@@ -1,5 +1,5 @@
 import tape from "tape";
-import { ServiceBusConnectionManager } from "../../src/textmod-queue/index";
+import ServiceBusConnectionManager,  { queueManagerSenderFactory } from "../../src/textmod-queue/index";
 
 
 (async () => {
@@ -32,7 +32,7 @@ import { ServiceBusConnectionManager } from "../../src/textmod-queue/index";
     await new Promise(resolve => setTimeout(resolve, 5000));
 
     // Close the connection to Azure Service Bus
-    await queueManager.close();
+    await queueManager.close()
   } catch (error) {
     console.error('An error occurred:', error);
   }

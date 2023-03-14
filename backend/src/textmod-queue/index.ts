@@ -1,6 +1,6 @@
 import { ServiceBusClient, ServiceBusSender, ServiceBusReceiver, ServiceBusReceivedMessage } from '@azure/service-bus';
 
-export class ServiceBusConnectionManager {
+export default class ServiceBusConnectionManager {
   private readonly connectionString: string;
   private readonly serviceBusClient: ServiceBusClient;
 
@@ -31,4 +31,9 @@ export class ServiceBusConnectionManager {
   public async close(): Promise<void> {
     await this.serviceBusClient.close();
   }
+}
+
+export const queueManagerSenderFactory = (connectionString: string, queueName: string) => {
+  const queueManager = new ServiceBusConnectionManager(connectionString)
+  return queueManager.createSender(queueName)
 }
