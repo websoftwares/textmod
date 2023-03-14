@@ -1,6 +1,10 @@
 import MySQLConnectionManager from '../textmod-mysql';
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
 import fs from 'fs';
+import { format } from 'date-fns';
+import { zonedTimeToUtc } from 'date-fns-tz';
+
+
 
 export default interface Subscription extends RowDataPacket {
   id: number;
@@ -57,10 +61,15 @@ export async function createSubscription(params: CreateSubscriptionParams): Prom
   const connection = await connectionManager.getConnection();
   try {
     await connection.beginTransaction();
+
+    // Convert startDate and endDate to UTC strings
+    const startDateUtc = format(zonedTimeToUtc(startDate, 'UTC'), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    const endDateUtc = format(zonedTimeToUtc(endDate, 'UTC'), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
     const result = await connection.query(
       `INSERT INTO subscriptions (user_id, stripe_customer_id, start_date, end_date, status, stripe_subscription_id)
        VALUES (?, ?, ?, ?, ?, ?)`,
-      [userId, stripeCustomerId, startDate, endDate, status, stripeSubscriptionId]
+      [userId, stripeCustomerId, startDateUtc, endDateUtc, status, stripeSubscriptionId]
     ) as unknown as ResultSetHeader
     const subscription = { id: result.insertId, userId, stripeCustomerId, startDate, endDate, status, stripeSubscriptionId };
     await connection.commit();
