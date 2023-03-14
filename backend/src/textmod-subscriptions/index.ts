@@ -2,8 +2,8 @@ import MySQLConnectionManager from '../textmod-mysql';
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
 import fs from 'fs';
 
-export default interface Subscription {
-  id : number;
+export default interface Subscription extends RowDataPacket {
+  id: number;
   userId: number;
   stripeCustomerId: string;
   startDate: Date;
@@ -122,16 +122,16 @@ export async function updateSubscription(params: UpdateSubscriptionParams): Prom
     if (fields.length === 0) {
       throw new Error('At least one field to update must be provided');
     }
-  const sql = `UPDATE subscriptions SET ${fields.join(', ')} WHERE id = ?`;
-  const result = await connection.query(sql, [...values, id]) as unknown as ResultSetHeader
-  await connection.commit();
-  return { affectedRows: result.affectedRows };
-} catch (err) {
-  await connection.rollback();
-  throw err;
-} finally {
-  connection.release();
-}
+    const sql = `UPDATE subscriptions SET ${fields.join(', ')} WHERE id = ?`;
+    const result = await connection.query(sql, [...values, id]) as unknown as ResultSetHeader
+    await connection.commit();
+    return { affectedRows: result.affectedRows };
+  } catch (err) {
+    await connection.rollback();
+    throw err;
+  } finally {
+    connection.release();
+  }
 }
 
 export interface SubscriptionQueryParams {
@@ -140,7 +140,7 @@ export interface SubscriptionQueryParams {
   stripeSubscriptionId?: string;
 }
 
-export async function getSubscription(params: SubscriptionQueryParams): Promise<Subscription[]> {
+export async function getSubscription(params: SubscriptionQueryParams): Promise<Subscription | null> {
   const { stripeCustomerId, userId, stripeSubscriptionId } = params;
   const connection = await connectionManager.getConnection();
   try {
@@ -163,16 +163,13 @@ export async function getSubscription(params: SubscriptionQueryParams): Promise<
     }
     whereClause = whereClause.slice(0, -5); // remove trailing "AND "
     const sql = `SELECT * FROM subscriptions WHERE ${whereClause}`;
-    const [rows] = await connection.query(sql, values) as unknown as [RowDataPacket[]];
-    return rows.map((row) => ({
-      id: row.id,
-      userId: row.user_id,
-      stripeCustomerId: row.stripe_customer_id,
-      startDate: row.start_date,
-      endDate: row.end_date,
-      status: row.status,
-      stripeSubscriptionId: row.stripe_subscription_id,
-    }));
+    const [rows] = await connection.execute<Subscription[]>(sql, values)
+    const subscription = rows[0]
+    if (subscription) {
+      return subscription
+    } else {
+      return null;
+    }
   } catch (err) {
     throw err;
   } finally {

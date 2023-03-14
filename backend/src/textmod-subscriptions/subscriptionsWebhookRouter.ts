@@ -73,7 +73,6 @@ subscriptionsWebhookRouter.post('/', async (req: Request, res: Response, next: N
         stripeSubscriptionId: subscription.id,
       };
 
-
       try {
         const sender = await queueManagerSenderFactory(process.env.AZ_SB_CONNECTION_STRING_CREATE_USER_SUBSCRIPTION as string, 'create_user_subscription')
         sender.sendMessages({
