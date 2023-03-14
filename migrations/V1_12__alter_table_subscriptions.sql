@@ -1,0 +1,3 @@
+ALTER TABLE subscriptions
+MODIFY start_date TIMESTAMP NOT NULL,
+MODIFY end_date TIMESTAMP NOT NULL;
